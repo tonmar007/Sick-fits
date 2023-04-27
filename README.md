@@ -17,11 +17,12 @@ The goal of this project is to provide a platform where users can easily and int
 
 # How to Run the Project
 
+First Download the project or clone the repository.
 To run the project, you need to run the frontend and backend separately:
 
 ## Running the Backend
 
-1. Download the project or clone the repository.
+1. Open a new terminal window.
 2. Navigate to the `backend` directory in the project using your terminal.
 3. Install dependencies using the `npm install` command.
 4. Start the backend server using the `npm run dev` command.
