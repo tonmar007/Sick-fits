@@ -1,10 +1,31 @@
-import { useState } from 'react';
+import useForm from '../lib/useForm';
+import Form from './styles/Form';
 
 export default function CreateProduct() {
-  const [name, setName] = useState('Marko');
+  const { inputs, handleChange, clearForm, resetForm } = useForm({
+    image: '',
+    name: 'Nike',
+    price: 32423,
+    description: 'The best shoes',
+  });
   return (
-    <div>
-      <form>
+    <Form
+      onSubmit={(e) => {
+        e.preventDefault();
+        console.log(inputs);
+      }}
+    >
+      <fieldset>
+        <label htmlFor="image">
+          Image
+          <input
+            required
+            type="file"
+            id="image"
+            name="image"
+            onChange={handleChange}
+          />
+        </label>
         <label htmlFor="name">
           Name
           <input
@@ -12,14 +33,34 @@ export default function CreateProduct() {
             id="name"
             name="name"
             placeholder="Name"
-            value={name}
-            onChange={(e) => {
-              console.log(e.target.value);
-              setName(e.target.value);
-            }}
+            value={inputs.name}
+            onChange={handleChange}
           />
         </label>
-      </form>
-    </div>
+        <label htmlFor="price">
+          Price
+          <input
+            type="number"
+            id="price"
+            name="price"
+            placeholder="Price"
+            value={inputs.price}
+            onChange={handleChange}
+          />
+        </label>
+        <label htmlFor="description">
+          Description
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Description"
+            value={inputs.description}
+            onChange={handleChange}
+          />
+        </label>
+
+        <button type="submit">+ Add Product</button>
+      </fieldset>
+    </Form>
   );
 }
