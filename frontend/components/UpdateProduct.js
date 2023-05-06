@@ -44,7 +44,6 @@ export default function UpdateProduct({ id }) {
   ] = useMutation(UPDATE_PRODUCT_MUTATION);
   const { inputs, handleChange, clearForm, resetForm } = useForm(data?.Product);
   if (loading) return <p>Loading...</p>;
-  console.log(inputs);
   return (
     <Form
       onSubmit={async (e) => {
@@ -57,12 +56,6 @@ export default function UpdateProduct({ id }) {
             price: inputs.price,
           },
         }).catch(console.error);
-        console.log(res);
-        // const res = await createProduct();
-        // clearForm();
-        // Router.push({
-        //   pathname: `/product/${res.data.createProduct.id}`,
-        // });
       }}
     >
       <DisplayError error={error || updateError} />
