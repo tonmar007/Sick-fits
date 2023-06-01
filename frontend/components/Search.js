@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { resetIdCounter, useCombobox } from 'downshift';
 import gql from 'graphql-tag';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import debounce from 'lodash.debounce';
+import { useRouter } from 'next/router';
 import { DropDownItem, DropDown, SearchStyles } from './styles/DropDown';
 
 const SEARCH_PRODUCTS_QUERY = gql`
@@ -27,34 +28,41 @@ const SEARCH_PRODUCTS_QUERY = gql`
 `;
 
 export default function Search() {
+  const router = useRouter();
   const [findItems, { loading, data, error }] = useLazyQuery(
     SEARCH_PRODUCTS_QUERY,
     {
-      fetchPolicy: 'network-only',
-      notifyOnNetworkStatusChange: true,
+      fetchPolicy: 'no-cache',
     }
   );
-  console.log(loading, data, error);
+
   const items = data?.searchTerms || [];
-  console.log('Data is: ', data);
   const findItemsButChill = debounce(findItems, 350);
   resetIdCounter();
-  const { inputValue, getMenuProps, getInputProps, getComboboxProps } =
-    useCombobox({
-      items: [],
-      onInputValueChange() {
-        console.log('Input changed!');
-        console.log('Input value is: ', inputValue);
-        findItemsButChill({
-          variables: {
-            searchTerm: inputValue,
-          },
-        });
-      },
-      onSelectedItemChange() {
-        console.log('Selected Item change!');
-      },
-    });
+  const {
+    isOpen,
+    inputValue,
+    getMenuProps,
+    getInputProps,
+    getComboboxProps,
+    getItemProps,
+    highlightedIndex,
+  } = useCombobox({
+    items,
+    onInputValueChange() {
+      findItemsButChill({
+        variables: {
+          searchTerm: inputValue,
+        },
+      });
+    },
+    onSelectedItemChange({ selectedItem }) {
+      router.push({
+        pathname: `/product/${selectedItem.id}`,
+      });
+    },
+    itemToString: (item) => item?.name || '',
+  });
   return (
     <SearchStyles>
       <div {...getComboboxProps()}>
@@ -63,14 +71,30 @@ export default function Search() {
             type: 'search',
             placeholder: 'Search for an Item',
             id: 'search',
-            className: 'loading',
+            className: loading ? 'loading' : '',
           })}
         />
       </div>
       <DropDown {...getMenuProps()}>
-        {items.map((item) => (
-          <DropDownItem>{item.name}</DropDownItem>
-        ))}
+        {isOpen &&
+          Object.keys(items).length > 0 &&
+          items.map((item, index) => (
+            <DropDownItem
+              key={item.id}
+              {...getItemProps({ item })}
+              highlighted={index === highlightedIndex}
+            >
+              <img
+                src={item.photo.image.publicUrlTransformed}
+                alt={item.name}
+                width="50"
+              />
+              {item.name}
+            </DropDownItem>
+          ))}
+        {isOpen && !items.length && !loading && (
+          <DropDownItem>Sorry, No items found for {inputValue}</DropDownItem>
+        )}
       </DropDown>
     </SearchStyles>
   );
