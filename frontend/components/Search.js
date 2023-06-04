@@ -77,7 +77,6 @@ export default function Search() {
       </div>
       <DropDown {...getMenuProps()}>
         {isOpen &&
-          Object.keys(items).length > 0 &&
           items.map((item, index) => (
             <DropDownItem
               key={item.id}
