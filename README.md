@@ -1,4 +1,4 @@
-<img width="418" alt="rsz_screenshot_2023-06-07_at_154835" src="https://github.com/tonmar007/Sick-fits/assets/62022812/5bb55b49-22e4-4acd-b428-c9459ec10115">
+<img width="1671" alt="Screenshot 2023-06-07 at 15 48 35" src="https://github.com/tonmar007/Sick-fits/assets/62022812/65bced9e-5136-4ec8-b87d-1b6b01368950">
 
 # Web Shop
 
