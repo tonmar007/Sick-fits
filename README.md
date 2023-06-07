@@ -1,3 +1,5 @@
+<img width="418" alt="rsz_screenshot_2023-06-07_at_154835" src="https://github.com/tonmar007/Sick-fits/assets/62022812/5bb55b49-22e4-4acd-b428-c9459ec10115">
+
 # Web Shop
 
 This project represents an online store for the sale of sports equipment. We have used a range of modern technologies to provide a better user experience.
