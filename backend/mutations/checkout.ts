@@ -14,7 +14,7 @@ async function checkout(
   context: KeystoneContext
 ): Promise<OrderCreateInput> {
   const userId = context.session.itemId;
-  if(!userId) {
+  if (!userId) {
     throw new Error('Sorry! You must be signed in to create an order! ')
   }
   const user = await context.lists.User.findOne({
@@ -44,7 +44,7 @@ async function checkout(
   });
   console.dir(user, { depth: null });
   const cartItems = user.cart.filter(cartItem => cartItem.product);
-  const amount = cartItems.reduce(function(tally: number, cartItem: CartItemCreateInput) {
+  const amount = cartItems.reduce(function (tally: number, cartItem: CartItemCreateInput) {
     return tally + cartItem.quantity * cartItem.product.price;
   }, 0);
   console.log(amount);
@@ -58,6 +58,30 @@ async function checkout(
     throw new Error(err.message);
   });
   console.log(charge);
+
+  const orderItems = cartItems.map(cartItem => {
+    const orderItem = {
+      name: cartItem.product.name,
+      description: cartItem.product.description,
+      price: cartItem.product.price,
+      quantity: cartItem.quantity,
+      photo: { connect: { id: cartItem.product.photo.id } },
+    }
+    return orderItem;
+  });
+  const order = await context.lists.Order.createOne({
+    data: {
+      total: charge.amount,
+      charge: charge.id,
+      items: { create: orderItems },
+      user: { connect: { id: userId } }
+    }
+  });
+  const cartItemIds = cartItems.map(cartItem => cartItem.id);
+  await context.lists.CartItem.deleteMany({
+    ids: cartItemIds
+  });
+  return order;
 }
 
 export default checkout;
