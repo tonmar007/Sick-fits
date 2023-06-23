@@ -42,12 +42,11 @@ async function checkout(
       }
     `
   });
-  console.dir(user, { depth: null });
+
   const cartItems = user.cart.filter(cartItem => cartItem.product);
   const amount = cartItems.reduce(function (tally: number, cartItem: CartItemCreateInput) {
     return tally + cartItem.quantity * cartItem.product.price;
   }, 0);
-  console.log(amount);
   const charge = await stripeConfig.paymentIntents.create({
     amount,
     currency: 'USD',
@@ -57,7 +56,6 @@ async function checkout(
     console.log(err);
     throw new Error(err.message);
   });
-  console.log(charge);
 
   const orderItems = cartItems.map(cartItem => {
     const orderItem = {
@@ -77,7 +75,7 @@ async function checkout(
       user: { connect: { id: userId } }
     }
   });
-  const cartItemIds = cartItems.map(cartItem => cartItem.id);
+  const cartItemIds = user.cart.map(cartItem => cartItem.id);
   await context.lists.CartItem.deleteMany({
     ids: cartItemIds
   });
