@@ -27,4 +27,15 @@ describe('<Product />', () => {
     );
     expect(container).toMatchSnapshot();
   });
+
+  it('Renders the image properly', () => {
+    const { container, debug } = render(
+      <MockedProvider>
+        <Product product={product} />
+      </MockedProvider>
+    );
+
+    const img = screen.getByAltText(product.name);
+    expect(img).toBeInTheDocument();
+  });
 });
